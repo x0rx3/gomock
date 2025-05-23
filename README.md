@@ -40,21 +40,20 @@ gomock reduces dependency on a real backend, enables rapid API integration testi
 
 For detailed information and usage examples, see the [Documentation](docs/README.md).
 
-<br />
-
 ## Quick Start
 
 1. Install dependencies:
     ```sh
     go mod tidy
     ```
-2. Run the service:
-    ```sh
-    go run cmd/gomock.go
-    ```
-3. Add your templates to the `templates/` folder.
 
-<br />
+3. Add folder with templates.
+
+3. Build and run the service:
+    ```sh
+    go run cmd/gomock.go  --dir /path/to/templates/folder --address :8080
+    ```
+
 
 ## Contributing 🙏
 

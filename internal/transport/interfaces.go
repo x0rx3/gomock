@@ -2,6 +2,7 @@ package transport
 
 import (
 	"gomock/internal/model"
+	"gomock/internal/transport/method"
 	"net/http"
 )
 
@@ -15,6 +16,6 @@ type RequestMatcher interface {
 
 type Router interface {
 	Path() string
-	Method() string
+	Method() method.Method
 	Handler() http.Handler
 }

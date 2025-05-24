@@ -38,8 +38,8 @@ func (inst *Server) Start(address string) error {
 	r := mux.NewRouter()
 
 	for _, hr := range inst.routes {
-		r.HandleFunc(hr.Path(), hr.Handler().ServeHTTP).Methods(hr.Method())
-		inst.log.Info("added handler:", zap.String("path", hr.Path()))
+		r.HandleFunc(hr.Path(), hr.Handler().ServeHTTP).Methods(string(hr.Method()))
+		inst.log.Info("added handler:", zap.String("path", hr.Path()), zap.String("method", string(hr.Method())))
 	}
 	inst.server.Handler = r
 

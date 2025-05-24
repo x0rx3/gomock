@@ -2,6 +2,7 @@ package server
 
 import (
 	"gomock/internal/transport"
+	"gomock/internal/transport/method"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -14,12 +15,12 @@ import (
 
 type MockRouter struct {
 	path    string
-	method  string
+	method  method.Method
 	handler http.Handler
 }
 
 func (m *MockRouter) Path() string          { return m.path }
-func (m *MockRouter) Method() string        { return m.method }
+func (m *MockRouter) Method() method.Method { return m.method }
 func (m *MockRouter) Handler() http.Handler { return m.handler }
 
 func TestNewServer(t *testing.T) {
@@ -57,7 +58,7 @@ func TestStartServer_Success(t *testing.T) {
 
 	router := mux.NewRouter()
 	for _, hr := range routes {
-		router.HandleFunc(hr.Path(), hr.Handler().ServeHTTP).Methods(hr.Method())
+		router.HandleFunc(hr.Path(), hr.Handler().ServeHTTP).Methods(string(hr.Method()))
 	}
 
 	req := httptest.NewRequest(http.MethodGet, "/test", nil)

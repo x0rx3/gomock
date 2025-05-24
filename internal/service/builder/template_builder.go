@@ -27,7 +27,7 @@ type TemplateBuilder struct {
 	log *zap.Logger
 }
 
-func (inst *TemplateBuilder) Build(path string) ([]model.HandlerTamplate, error) {
+func (inst *TemplateBuilder) Build(path string) ([]model.Template, error) {
 	dir, err := os.ReadDir(path)
 	if err != nil {
 		return nil, err
@@ -38,20 +38,20 @@ func (inst *TemplateBuilder) Build(path string) ([]model.HandlerTamplate, error)
 		return nil, err
 	}
 
-	templates := make([]model.HandlerTamplate, 0)
+	templates := make([]model.Template, 0)
 	for _, file := range dir {
 		if file.IsDir() {
 			continue
 		}
-		template := model.HandlerTamplate{}
+		template := model.Template{}
 		if re.MatchString(file.Name()) {
 			f, err := os.ReadFile(fmt.Sprintf("%s/%s", path, file.Name()))
 			if err != nil {
-				continue
+				return nil, fmt.Errorf("%s, file: %s", err.Error(), file.Name())
 			}
 
 			if err := json.Unmarshal(f, &template); err != nil {
-				continue
+				return nil, fmt.Errorf("%s, file: %s", err.Error(), file.Name())
 			}
 
 			templates = append(templates, template)
@@ -70,13 +70,11 @@ func (inst *TemplateBuilder) Build(path string) ([]model.HandlerTamplate, error)
 // For example, it checks if both SetBody and SetFile are used in the same template.
 // If any conflicts are found, it returns an error.
 // If the templates are valid, it returns nil.
-func (inst *TemplateBuilder) validate(templates []model.HandlerTamplate) error {
+func (inst *TemplateBuilder) validate(templates []model.Template) error {
 	for _, template := range templates {
-		for _, cases := range template.Cases {
-			for _, c := range cases {
-				if c.SetResponseTemplate.SetBody != nil && c.SetResponseTemplate.SetFile != "" {
-					return fmt.Errorf("cannot use parameter 'SetBody' with 'SetFile'")
-				}
+		for _, handle := range template.Handle {
+			if handle.SetResponseTemplate.SetBody != nil && handle.SetResponseTemplate.SetFile != "" {
+				return fmt.Errorf("cannot use parameter 'SetBody' with 'SetFile'")
 			}
 		}
 	}

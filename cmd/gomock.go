@@ -6,6 +6,8 @@ import (
 	"gomock/internal/service/builder"
 	"gomock/internal/transport"
 	"gomock/internal/transport/server"
+
+	"go.uber.org/zap"
 )
 
 func main() {
@@ -17,7 +19,7 @@ func main() {
 
 	templates, err := builder.NewTemplateBuilder(log).Build(*templateDir)
 	if err != nil {
-		log.Info("Service stoped")
+		log.Error("error build template", zap.Error(err))
 		return
 	}
 
@@ -27,7 +29,7 @@ func main() {
 	}
 
 	if err := server.New(log, r...).Start(*address); err != nil {
-		log.Info("Service stoped")
+		log.Error("error start server", zap.Error(err))
 		return
 	}
 }

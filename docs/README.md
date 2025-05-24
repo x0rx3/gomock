@@ -49,10 +49,6 @@ Tests check the core functions of the service and its stability.
 - `PUT` - HTTP method
 - `DELETE` - HTTP method
 - `PATCH` - HTTP method
-- `OPTIONS` - HTTP method
-- `HEAD` - HTTP method
-- `TRACE` - HTTP method
-- `CONNECT` - HTTP method
 
 ### Placeholder Syntax
 - `${...}` - any value

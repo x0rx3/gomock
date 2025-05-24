@@ -74,7 +74,7 @@ func (inst *TemplateBuilder) validate(templates []model.HandlerTamplate) error {
 	for _, template := range templates {
 		for _, cases := range template.Cases {
 			for _, c := range cases {
-				if c.SetResponseDto.SetBody != nil && c.SetResponseDto.SetFile != "" {
+				if c.SetResponseTemplate.SetBody != nil && c.SetResponseTemplate.SetFile != "" {
 					return fmt.Errorf("cannot use parameter 'SetBody' with 'SetFile'")
 				}
 			}

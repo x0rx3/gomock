@@ -26,7 +26,7 @@ var BuildRoutes Build = func(log *zap.Logger, template *model.HandlerTamplate) [
 	for method, cas := range template.Cases {
 		reqResM := make(map[transport.RequestMatcher]transport.ResponsePreparer)
 		for _, c := range cas {
-			reqResM[matcher.NewRequestMatcher(log, &c.MatchRequest)] = preparer.NewResponsePreparer(c.SetResponseDto)
+			reqResM[matcher.NewRequestMatcher(log, &c.MatchRequestTemplate)] = preparer.NewResponsePreparer(c.SetResponseTemplate)
 		}
 
 		r = append(

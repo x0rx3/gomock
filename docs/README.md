@@ -39,11 +39,12 @@ go test ./...
 Tests check the core functions of the service and its stability.
 
 ## Syntax 
+
 ### Path Parameters
 - `:param_name` - path parameter that can be matched with any value
 - `{id:[a-zA-Z0-9-]+}` - path parameter that can be matched with a regular expression
 
-### Allowed values
+### Allowed values of `MustMethod` field
 - `GET` - HTTP method
 - `POST` - HTTP method
 - `PUT` - HTTP method
@@ -52,14 +53,15 @@ Tests check the core functions of the service and its stability.
 
 ### Placeholder Syntax
 - `${...}` - any value
-- `${regexp:...}` - value that matches the regular expression
-- `${req.queryParams:...}` - value from query parameters
-- `${req.pathParams:...}` - value from path parameters
-- `${req.formParams:...}` - value from form parameters
-- `${req.headers:...}` - value from headers
-- `${req.body:...}` - value from body
+- `${regexp:...}` - value that matches the regular expression, where `...` is custom regexp
+- `${req.queryParams:...}` - value from query parameters, where `...` is name of parameter from query  
+- `${req.pathParams:...}` - value from path parameters, where `...` is name of parameter from path
+- `${req.formParams:...}` - value from form parameters, where `...` is name of parameter from form
+- `${req.headers:...}` - value from headers, where `...` is name of header
+- `${req.body:...}` - value from body, where `...` is name of parameter from body
 
 ### Requst Matching
+- `MustMethod` - method of handled case, is required field
 - `MustPathParameters` - path parameters that must be present in the request
 - `MustQueryParameters` - query parameters that must be present in the request
 - `MustFormParameters` - form parameters that must be present in the request
@@ -72,66 +74,45 @@ Tests check the core functions of the service and its stability.
 - `SetBody` - body to return in the response
 - `SetFile` - file to return in the response
 
-## Example Template
+### Example Template
 
 ```json
 {
-    "Name": "testing",
-    "Path": "/testing/:user_uuid",
-    "Cases": {
-        "GET": [
-            {
-                "MatchRequest": {
-                    "MustPathParameters": {
-                        "user_uuid": "${...}"
-                    },
-                    "MustHeaders": {},
+    "Path": "/users",
+    "Handle": [
+        {
+            "MatchRequest": {
+                "MustMethod": "GET",
+                "MustQueryParameters": {
+                    "sort": "name"
                 },
-                "SetResponse": {
-                    "SetStatus": 200,
-                    "SetBody": {
-                        "user_uuid": "${req.queryParams:user_uuid}",
-                        "username": "x0rx3"
-                    }
+                "MustHeaders": {
+                    "Host": "127.0.0.1"
                 }
             },
-            {
-                "MatchRequest": {
-                    "MustQueryParameters": {
-                        "download": "${...}"
-                    },
-                    "MustFormParameters": {},
-                    "MustHeaders": {},
-                    "MustBody": {}
-                },
-                "SetResponse": {
-                    "SetStatus": 200,
-                    "SetFile": "path_to_file/file"
-                }
-            },
-            {
-                "MatchRequest": {
-                    "MustQueryParameters": {
-                        "download": "${...}"
-                    },
-                },
-                "SetResponse": {
-                    "SetStatus": 200,
-                    "SetFile": "testfile.txt"
-                }
-            },
-
-            {
-                "MatchRequest": {},
-                "SetResponse": {
-                    "SetStatus": 200,
-                    "SetBody": {
-                        "user_uuid": "${req.queryParams:user_uuid}",
-                        "username": "x0rx3"
-                    }
+            "SetResponse": {
+                "SetStatus": 200,
+                "SetBody": {
+                    "user_uuid": "${req.queryParams:user_uuid}",
+                    "username": "x0rx3"
                 }
             }
-        ]
-    }
+        },
+        {
+            "MatchRequest": {
+                "MustMethod": "POST",
+                "MustQueryParameters": {
+                   "download": "" 
+                },
+                "MustHeaders": {
+                    "Host": "192.168.0.1"
+                }
+            },
+            "SetResponse": {
+                "SetStatus": 200,
+                "SetFile": "/path/to/file"
+            }
+        },
+    ]
 }
 ```

@@ -19,6 +19,8 @@ func (inst *Method) UnmarshalJSON(data []byte) error {
 	case "GET", "POST", "PUT", "PATCH", "DELETE":
 		*inst = method
 		return nil
+	case "":
+		return fmt.Errorf("unxpected method")
 	default:
 		return fmt.Errorf("unxpected method")
 	}
